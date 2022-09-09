@@ -1,23 +1,22 @@
 import express from 'express';
-import exphbs from 'express-handlebars';
+import { engine } from 'express-handlebars';
 import cookieParser from 'cookie-parser';
-import bodyParser from 'body-parser';
+import urlencoded from 'body-parser';
 
 const app = express();
 
 // support URL-encoded bodies from  payload
-app.use(bodyParser.urlencoded({ 
+app.use(urlencoded({ 
     extended: true }));
 
 // support cookie parsing from HTTP Req
 app.use(cookieParser());
 
 // set .hbs ext instead of .handlebars
-app.engine('hbs', exphbs({
-    extname: '.hbs'
-}));
+app.engine('.hbs', engine({extname: '.hbs'}));
 
-app.set('view engine', 'hbs');
+
+app.set('view engine', '.hbs');
 
 app.listen(3000);
 
