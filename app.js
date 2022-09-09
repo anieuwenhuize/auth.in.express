@@ -10,6 +10,16 @@ const app = express();
 app.use(urlencoded({ 
     extended: true }));
 
+app.use((req, res, next) => {
+    // Get auth token from the cookies
+    const authToken = req.cookies['AuthToken'];
+
+    // Inject the user to the request
+    req.user = authTokens[authToken];
+
+    next();
+});
+
 // support cookie parsing from HTTP Req
 app.use(cookieParser());
 
@@ -20,14 +30,8 @@ app.set('view engine', '.hbs');
 
 app.listen(3000);
 
-// set the routes
-app.get('/', function (req, res) {
-    res.render('home');
-});
 
-app.get('/register', (req, res) => {
-    res.render('register');
-});
+const authTokens = {};
 
 // set functions
 const getHashedPassword = (pwd) => {
@@ -35,6 +39,11 @@ const getHashedPassword = (pwd) => {
     const hash = sha256.update(pwd).digest('base64');
     return hash;
 };
+
+const generateAuthToken = () => {
+    return crypto.randomBytes(30).toString('hex');
+};
+
 
 const users = [
     // This user is added to the array to avoid creating a new user on each restart
@@ -46,6 +55,47 @@ const users = [
         password: 'XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg='
     }
 ];
+
+// set the routes
+app.get('/', function (req, res) {
+    res.render('home');
+});
+
+app.get('/register', (req, res) => {
+    res.render('register');
+});
+
+app.get('/login', (req, res) => {
+    res.render('login');
+})
+
+app.post('/login', (req, res) => {
+    const { email, password } = req.body;
+    const hashedPassword = getHashedPassword(password);
+
+    const user = users.find(u => {
+        return u.email === email && hashedPassword === u.password
+    });
+
+    if (user) {
+        const authToken = generateAuthToken();
+
+        // Store authentication token
+        authTokens[authToken] = user;
+
+        // Setting the auth token in cookies
+        res.cookie('AuthToken', authToken);
+
+        // Redirect user to the protected page
+        res.redirect('/protected');
+    } else {
+        res.render('login', {
+            message: 'Invalid username or password',
+            messageClass: 'alert-danger'
+        });
+    }
+});
+
 
 app.post('/register', (req, res) => {
     const { email, firstName, lastName, password, confirmPassword } = req.body;
