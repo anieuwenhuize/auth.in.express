@@ -12,6 +12,7 @@ app.use(bodyParser.urlencoded({
 // support cookie parsing from HTTP Req
 app.use(cookieParser());
 
+// set .hbs ext instead of .handlebars
 app.engine('hbs', exphbs({
     extname: '.hbs'
 }));
@@ -20,3 +21,7 @@ app.set('view engine', 'hbs');
 
 app.listen(3000);
 
+// set request handler
+app.get('/', function (req, res) {
+    res.render('home');
+});
