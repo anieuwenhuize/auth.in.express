@@ -1,0 +1,19 @@
+{
+  "name": "auth.in.express",
+  "version": "1.0.0",
+  "description": "Finding out simple auth",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anieuwenhuize/auth.in.express.git"
+  },
+  "author": "Andries Nieuwenhuize",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/anieuwenhuize/auth.in.express/issues"
+  },
+  "homepage": "https://github.com/anieuwenhuize/auth.in.express#readme"
+}
